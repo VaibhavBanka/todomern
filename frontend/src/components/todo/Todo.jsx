@@ -7,6 +7,7 @@ import Update from "./Update";
 import axios from "axios";
 import { useEffect } from "react";
 let id=sessionStorage.getItem("id");
+let toupdatearray=[]
 const Todo = () => {
     // alert(id);  
     const [inputs,setinputs]=useState({title:"",body:""});
@@ -35,7 +36,6 @@ const Todo = () => {
         else{
           setarray([...array,inputs])
           setinputs({title:"",body:""});
-          toast.success("Your task is Added");
           toast.error("Your task is Added but not saved! Please sign up")
         }
       }
@@ -43,7 +43,7 @@ const Todo = () => {
     const del=async(Cardid)=>{
       if(id){
         await axios.delete(`http://localhost:1000/api/v2/deleteTask/${Cardid}`,{data:{id:id},}).
-        then((response)=>{
+        then(()=>{
           toast.success("Your task is Deleted");
         })
       }
@@ -57,6 +57,10 @@ const Todo = () => {
 
     const dis=(value)=>{
       document.getElementById("todo-update").style.display=value;
+    }
+
+    const update=(value)=>{
+      toupdatearray=array[value];
     }
 
     useEffect(()=>{
@@ -87,14 +91,14 @@ const Todo = () => {
                 {array && 
                 array.map((item,index)=>(
                     <div className="col-lg-3 col-10 mx-5 my-2" key={index}><TodoCards 
-                    title={item.title} body={item.body} id={item._id} delid={del} display={dis}/></div>
+                    title={item.title} body={item.body} id={item._id} delid={del} display={dis} updateId={index} tobeupdate={update}/></div>
                 ))}
             </div>
         </div>
       </div>
     </div>
     <div className="todo-update" id="todo-update">
-       <div className="container update"><Update display={dis}/></div> 
+       <div className="container update"><Update display={dis} update={toupdatearray} /></div> 
     </div>
     </>
   );

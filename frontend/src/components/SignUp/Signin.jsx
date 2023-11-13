@@ -15,13 +15,13 @@ const Signin = () => {
   }
   const submit=async(e)=>{
     e.preventDefault();
-    await axios.post("http://localhost:1000/api/v1/signin",inputs).then((response)=>{
-      // console.log(response);
-      sessionStorage.setItem("id",response.data._id);
-      dispatch(authActions.login());
-      history("/todo")
-    });
+    const signin=await axios.post("http://localhost:1000/api/v1/signin",inputs)
+    sessionStorage.setItem("id",signin.data._id);
+    dispatch(authActions.login());
+    history("/todo");
   };
+
+  
   return (
     <div className='signup'>
       <div className="container">

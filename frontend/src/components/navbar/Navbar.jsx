@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom';
 import {useSelector } from 'react-redux/es/hooks/useSelector';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../store';
+import { toast } from 'react-toastify';
 const Navbar = () => {
   const isLoggedIn=useSelector((state)=>state.isLoggedIn)
   const dispatch=useDispatch();
-  const logout=()=>{
+  const logout=async()=>{
     sessionStorage.clear("id");
     dispatch(authActions.logout());
   }
