@@ -4,10 +4,13 @@ import TodoCards from "./TodoCards";
 import {ToastContainer,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Update from "./Update";
+import axios from "axios";
+import { useEffect } from "react";
+let id=sessionStorage.getItem("id");
 const Todo = () => {
-
+    // alert(id);  
     const [inputs,setinputs]=useState({title:"",body:""});
-    const [array,setarray]=useState([])
+    const [array,setarray]=useState([]);
 
     const show=()=>{
         document.getElementById('textarea').style.display="block";
@@ -18,24 +21,52 @@ const Todo = () => {
         setinputs({...inputs,[name]:value});
     }
 
-    const submit=()=>{
+    const submit=async()=>{
       if(inputs.title==="" || inputs.body===""){
         toast.error("Title or body Should not be empty")
       }else{
-        setarray([...array,inputs])
-        setinputs({title:"",body:""});
-        toast.success("Your task is Added");
-        toast.error("Your task is Added but not saved! Please sign up")
+        if(id){
+          await axios.post("http://localhost:1000/api/v2/addTask",{title:inputs.title,body:inputs.body,id:id})
+          .then((response)=>console.log(response));
+          // setarray([...array,inputs])
+          setinputs({title:"",body:""});
+          toast.success("Your task is Added");
+        }
+        else{
+          setarray([...array,inputs])
+          setinputs({title:"",body:""});
+          toast.success("Your task is Added");
+          toast.error("Your task is Added but not saved! Please sign up")
+        }
       }
     }
-    const del=(id)=>{
-      array.splice(id,"1");
-      setarray([...array]);
+    const del=async(Cardid)=>{
+      if(id){
+        await axios.delete(`http://localhost:1000/api/v2/deleteTask/${Cardid}`,{data:{id:id},}).
+        then((response)=>{
+          toast.success("Your task is Deleted");
+        })
+      }
+      else{
+        toast.error("Please SignUp First")
+      }
+      
+      // array.splice(id,"1");
+      // setarray([...array]);
     }
 
     const dis=(value)=>{
       document.getElementById("todo-update").style.display=value;
     }
+
+    useEffect(()=>{
+      if(id){
+        const fetch=async()=>{
+          await axios.get(`http://localhost:1000/api/v2/getTasks/${id}`).then((response)=>{setarray(response.data.list)});
+        };
+        fetch();
+      }
+    },[submit])
 
   return (
     <>
@@ -55,7 +86,8 @@ const Todo = () => {
             <div className="row">
                 {array && 
                 array.map((item,index)=>(
-                    <div className="col-lg-3 col-10 mx-5 my-2" key={index}><TodoCards title={item.title} body={item.body} id={index} delid={del} display={dis}/></div>
+                    <div className="col-lg-3 col-10 mx-5 my-2" key={index}><TodoCards 
+                    title={item.title} body={item.body} id={item._id} delid={del} display={dis}/></div>
                 ))}
             </div>
         </div>

@@ -2,9 +2,17 @@ import React from 'react'
 import './Navbar.css';
 import {GiWhiteBook} from "react-icons/gi";
 import { Link } from 'react-router-dom';
-
+import {useSelector } from 'react-redux/es/hooks/useSelector';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store';
 const Navbar = () => {
-  return (
+  const isLoggedIn=useSelector((state)=>state.isLoggedIn)
+  const dispatch=useDispatch();
+  const logout=()=>{
+    sessionStorage.clear("id");
+    dispatch(authActions.logout());
+  }
+ return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light">
   <div className="container">
@@ -23,20 +31,26 @@ const Navbar = () => {
         <li className="nav-item mx-2">
           <Link className="nav-link active" aria-current="page" to="/todo">ToDo</Link>
         </li>
-        <li className="nav-item mx-2">
-          <Link className="nav-link active btn-nav " aria-current="page" to="/signup">SignUp</Link>
-        </li>
-        <li className="nav-item mx-2">
-          <Link className="nav-link active btn-nav " aria-current="page" to="/signin">SignIn</Link>
-        </li>
-        <li className="nav-item mx-2">
-          <Link className="nav-link active btn-nav " aria-current="page" to="#">Logout</Link>
-        </li>
-        <li className="nav-item mx-2">
-          <Link className="nav-link active" aria-current="page" to="#">
-            <img className="img-fluid user-png" src="https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png" alt="" />
-          </Link>
-        </li>
+        {!isLoggedIn && <>
+          <li className="nav-item mx-2">
+            <Link className="nav-link active btn-nav " aria-current="page" to="/signup">SignUp</Link>
+          </li>
+          <li className="nav-item mx-2">
+            <Link className="nav-link active btn-nav " aria-current="page" to="/signin">SignIn</Link>
+          </li>
+          </>
+        }
+        {isLoggedIn && <>
+          <li className="nav-item mx-2">
+            <Link className="nav-link active btn-nav " aria-current="page" to="#" onClick={logout}>Logout</Link>
+          </li>
+          <li className="nav-item mx-2">
+            <Link className="nav-link active" aria-current="page" to="#">
+              <img className="img-fluid user-png" src="https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png" alt="" />
+            </Link>
+          </li>
+          </>
+        }
       </ul>
     </div>
   </div>

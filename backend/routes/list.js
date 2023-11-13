@@ -5,8 +5,8 @@ const List=require("../models/list")
 //create
 router.post("/addTask",async(req,res)=>{
     try{
-        const{title,body,email}=req.body;
-        const existinguser=await User.findOne({email})
+        const{title,body,id}=req.body;
+        const existinguser=await User.findById(id)
         if(existinguser){
             const list=new List({title,body,user:existinguser});
             await list.save().then(()=>res.status(200).json({list}));
@@ -37,9 +37,9 @@ router.put("/updateTask/:id",async(req,res)=>{
 //delete
 router.delete("/deleteTask/:id",async(req,res)=>{
     try{
-        const{email}=req.body;
-        const existinguser=await User.findOneAndUpdate(
-        {email},
+        const{id}=req.body;
+        const existinguser=await User.findByIdAndUpdate(
+        id,
         {$pull:{list:req.params.id}})
         if(existinguser){
             await List.findByIdAndDelete(req.params.id)
