@@ -1,14 +1,12 @@
 const mongoose=require("mongoose")
-const conn=async(req,res)=>{
+const conn=async(url)=>{
     try{
         await mongoose
-        .connect("mongodb+srv://vaibhavbanka12:Vaibhav1211@cluster0.mssuf9i.mongodb.net/")
+        .connect(url)
         .then(()=>{ console.log("Connected")})
     }
     catch(error){
-        res.status(400).json({
-            message:"Not Connected"
-        })
+        console.log("Connection failed",error.message);
     }
 };
-conn();
+module.exports=conn;

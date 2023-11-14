@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import {toast} from 'react-toastify'
 const Update = ({display,update}) => {
 
   useEffect(()=>{
@@ -16,7 +17,7 @@ const Update = ({display,update}) => {
   }
   const submit=async()=>{
     await axios.put(`http://localhost:1000/api/v2/updateTask/${update._id}`,inputs).then((response)=>{
-      console.log(response)
+      toast.success("The Task is Updated Successfully");
     })
     console.log(inputs)
     display('none')

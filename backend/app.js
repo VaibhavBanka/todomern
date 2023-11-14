@@ -1,7 +1,8 @@
 const express=require ("express")
 const app=express()
 const cors=require('cors')
-require('./connection/connection')
+const conn=require('./connection/connection')
+require('dotenv').config();
 
 const auth=require("./routes/auth");
 const list=require("./routes/list")
@@ -18,4 +19,5 @@ app.use("/api/v2",list);
 
 app.listen(1000,()=>{
     console.log("Server started");
+    conn(process.env.MONGO_URI)
 });
