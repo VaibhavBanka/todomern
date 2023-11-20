@@ -1,17 +1,25 @@
 import React from 'react'
 import './Navbar.css';
 import {GiWhiteBook} from "react-icons/gi";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {useSelector } from 'react-redux/es/hooks/useSelector';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../store';
 import { toast } from 'react-toastify';
 const Navbar = () => {
+  const history=useNavigate();
   const isLoggedIn=useSelector((state)=>state.isLoggedIn)
   const dispatch=useDispatch();
   const logout=async()=>{
-    sessionStorage.clear("id");
-    dispatch(authActions.logout());
+    try{
+      sessionStorage.clear("id");
+      dispatch(authActions.logout());
+      window.location.href='/' // for redirecting to home page after logout
+      history('/about');
+    }
+    catch(error){
+      toast.error("Cannot Log Out")
+    }
   }
  return (
     <div>
@@ -33,18 +41,21 @@ const Navbar = () => {
           <Link className="nav-link active" aria-current="page" to="/todo">ToDo</Link>
         </li>
         {!isLoggedIn && <>
+        <div className='d-flex'>
           <li className="nav-item mx-2">
-            <Link className="nav-link active btn-nav " aria-current="page" to="/signup">SignUp</Link>
-          </li>
+            <Link className="nav-link active btn-nav p-2" aria-current="page" to="/signup">SignUp</Link>
+          </li></div>
+          <div className='d-flex my-lg-0 my-2'>
           <li className="nav-item mx-2">
-            <Link className="nav-link active btn-nav " aria-current="page" to="/signin">SignIn</Link>
-          </li>
+            <Link className="nav-link active btn-nav p-2" aria-current="page" to="/signin">SignIn</Link>
+          </li></div>
           </>
         }
         {isLoggedIn && <>
-          <li className="nav-item mx-2">
+        <div className='d-flex'>
+          <li className="nav-item mx-2 p-2">
             <Link className="nav-link active btn-nav " aria-current="page" to="#" onClick={logout}>Logout</Link>
-          </li>
+          </li></div>
           <li className="nav-item mx-2">
             <Link className="nav-link active" aria-current="page" to="#">
               <img className="img-fluid user-png" src="https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png" alt="" />
